@@ -9,7 +9,7 @@ WeChat running on the command line, can send and receive messages, based on itch
 - Receive WeChat messages and show in command line
 - Send messages to WeChat friends by the specified name / num
 
-## How To Use
+## How To Run
 ``` bash
 # clone this repository
 git clone git@github.com:oneatletico/cmd-wechat-terminal.git
@@ -19,6 +19,19 @@ cd cmd-wechat-terminal
 pip install itchat
 # run wechat.py directly
 ./wechat.py
+```
+
+## How To Use
+``` bash
+all                         # List all WeChat friends of this account
+list                        # List all WeChat friends of this account
+recent                      # List the last 5 WeChat contacts of this accound
+help                        # Show this help guide
+exit                        # Log out
+send <message>              # Send a message to the last TO (you send msg to)
+reply <message>             # Send a message to the last FROM (you receive msg from)
+send <message> | <name>     # Send a message to a friend specified by name
+send <message> || <num>     # Send a message to a friend specified by num
 ```
 
 ## Demo
