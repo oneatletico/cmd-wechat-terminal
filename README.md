@@ -1,5 +1,6 @@
 # cmd-wechat-terminal 
 WeChat running on the command line, can send and receive messages, based on itchat
+
 可运行在命令行的微信，能够发送和接收消息，基于ItChat开发
 
 ## Features
