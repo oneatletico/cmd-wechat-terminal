@@ -74,7 +74,7 @@ def get_info():
     set_friends = itchat.get_friends(update=True)
     # get current user info
     user = set_friends[0]
-    user_name = user['RemarkName'] or user['NickName']
+    username = user['RemarkName'] or user['NickName']
     # traverse set and added name into all_friends list
     for friend in set_friends:
         friend_name = friend['RemarkName'] or friend['NickName']
