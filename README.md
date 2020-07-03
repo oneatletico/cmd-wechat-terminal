@@ -33,6 +33,7 @@ send <message>              # Send a message to the last TO (you send msg to)
 reply <message>             # Send a message to the last FROM (you receive msg from)
 send <message> | <name>     # Send a message to a friend specified by name
 send <message> || <num>     # Send a message to a friend specified by num
+send @fil@<filename>        # Send a file (@img@ for image, @vid@ for video)
 ```
 
 ## Demo
@@ -45,4 +46,6 @@ Loading wechat friends list
 1. Leo
 > send Hello || 1
 [13:55:43]  -> Leo : Hello
+> send @fil@/home/aaa/a.txt | filehelper
+[13:55:44]  -> filehelper : /home/aaa/a.txt
 ```
