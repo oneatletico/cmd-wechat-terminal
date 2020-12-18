@@ -48,18 +48,17 @@ def show_help():
         Terminal WeChat
             developed by Lucas Zhang
             based on ItChat
-
         Command List
             all                         List all WeChat friends of this account
             list                        List all WeChat friends of this account
             recent                      List the last 5 WeChat contacts of this accound
             help                        Show this help guide
             exit                        Log out
-
             send <message>              Send a message to the last TO (you send msg to)
             reply <message>             Send a message to the last FROM (you receive msg from)
             send <message> | <name>     Send a message to a friend specified by name
             send <message> || <num>     Send a message to a friend specified by num
+            send @fil@<filename>        Send a file (@img@ for image, @vid@ for video)
         """
     )
 
@@ -108,8 +107,11 @@ def send_msg(content, friend_name):
     else:
         # send message
         try:
-            friend = itchat.search_friends(friend_name)[0]
-            friend.send(content)
+            if friend_name == "filehelper":
+                itchat.send(content, toUserName='filehelper')
+            else:
+                friend = itchat.search_friends(friend_name)[0]
+                friend.send(content)
         except BaseException as e:
             print("[ERROR] Unable to find this friend!")
         else:
@@ -184,7 +186,7 @@ def show_list(friends):
     if all_friends:
         for index, friend_name in enumerate(friends):
             index += 1
-            print(f"{index}. {friend_name}")
+            print(f"{index}. {friend_name}\t", end="")
     else:
         print("No friend in this list")
 
@@ -230,7 +232,7 @@ def launcher_loop():
         # input and format command
         cmd_ctrl()
 
-@itchat.msg_register(itchat.content.TEXT)
+@itchat.msg_register(TEXT)
 def receive_msg(msg):
     "monitor new message to call this function"
     # get message content
@@ -238,13 +240,38 @@ def receive_msg(msg):
     # get message time
     time_ = get_time()
     # get message sender
-    friend_name = msg['User']['RemarkName'] or msg['User']['NickName']
+    if "RemarkName" in msg['User']:
+        friend_name = msg['User']['RemarkName'] or msg['User']['NickName']
+    else:
+        friend_name = msg['User']['UserName']
     # show received message
     if msg['FromUserName'] == msg['User']['UserName']:
         print(f"\n[{time_}] {friend_name} -> {username} : {content}\n> ", end='')
     # show sent message
     else:
         print(f"\n[{time_}] {username} -> {friend_name} : {content}\n> ", end='')
+    # update friend list and last FROM
+    if all_friends: update_friends(friend_name)
+    global last_from
+    last_from = friend_name
+
+@itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
+def download_files(msg):
+    # download it
+    msg.download(msg.fileName)
+    # get message time
+    time_ = get_time()
+    # get message sender
+    if "RemarkName" in msg['User']:
+        friend_name = msg['User']['RemarkName'] or msg['User']['NickName']
+    else:
+        friend_name = msg['User']['UserName']
+    # show received message
+    if msg['FromUserName'] == msg['User']['UserName']:
+        print(f"\n[{time_}] {friend_name} -> {username} : {msg.fileName} received\n> ", end='')
+    # show sent message
+    else:
+        print(f"\n[{time_}] {username} -> {friend_name} : {msg.fileName} send\n> ", end='')
     # update friend list and last FROM
     if all_friends: update_friends(friend_name)
     global last_from
